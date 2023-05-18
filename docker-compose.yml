@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+    postgresql-master:
+        container_name: postgresql-master
+        image: bitnami/postgresql:latest
+        volumes:
+            - ./postgresql-master:/bitnami/postgresql
+        ports:
+            - "55432:5432"
+        environment:
+            - POSTGRESQL_REPLICATION_MODE=master
+            - POSTGRESQL_USERNAME=juanc
+            - POSTGRESQL_PASSWORD=jc952000
+            - POSTGRESQL_DATABASE=my_database
+            - POSTGRESQL_REPLICATION_USER=juanc
+            - POSTGRESQL_REPLICATION_PASSWORD=jc952000
+
+    postgresql-slave:
+        container_name: postgresql-slave
+        image: bitnami/postgresql:latest
+        ports:
+            - "65432:5432"
+        volumes:
+            - ./postgresql-slave:/bitnami/postgresql
+        environment:
+            - POSTGRESQL_REPLICATION_MODE=slave
+            - POSTGRESQL_USERNAME=juanc
+            - POSTGRESQL_PASSWORD=jc952000
+            - POSTGRESQL_MASTER_HOST=postgresql-master
+            - POSTGRESQL_MASTER_PORT_NUMBER=5432
+            - POSTGRESQL_REPLICATION_USER=juanc
+            - POSTGRESQL_REPLICATION_PASSWORD=jc952000
+        depends_on:
+            - postgresql-master
+
+# volumes:
+#     postgres-db: 
+#         external: true
